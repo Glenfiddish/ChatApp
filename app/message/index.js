@@ -10,17 +10,17 @@ let express = require('express')
 let router = express.Router()
 
 router.get('/:fromId/:toId',function(req,res){
-    var resJSON = {}    
-    User.findById(req.params.fromId).then((form)=>{
-        resJSON.formUserName = form.account
-        User.findById(req.params.toId).then((to)=>{
-            resJSON.toUserName = to.account
-            redis.lrange(req.params.fromId +'_'+ req.params.toId,0,10,(err,list)=>{
-               resJSON.list = list
-               res.send(resJSON)
-            })
+    redis.lrange(req.params.fromId+'_'+req.params.toId,0,-1,(err,list)=>{
+        // console.log(list)
+        list = list.map(item=>{
+
+            return JSON.parse(item)
         })
-    }) 
+        list = list.sort((a,b)=>{
+            return a.timeStamp > b.timeStamp
+        })
+        res.send(list)
+    })
 })
 
 module.exports = router
