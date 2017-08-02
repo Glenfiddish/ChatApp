@@ -34,29 +34,28 @@ const store = new Vuex.Store({
           state.message.push(item)
       },
       set_me:(state,obj)=>{
-          // console.log(obj.logo)
           let me = obj
           state.me = me
       },
       set_you:(state,obj)=>{
-          state.you=obj
+          let you = obj
+          state.you=you
       },
   },
   actions:{
-      fetch_friends({commit}){
-          request.get(host+'user/'+window.user.id+'/friend').end((err,res)=>{
+      fetch_friends({state,commit}){
+          request.get(host+'user/'+state.me.id+'/friend').end((err,res)=>{
             commit('set_friends',res.body)
           })
       },
-      fetch_posts({commit}){
-          request.get(host+'post/user/'+window.user.id).end((err,res)=>{
+      fetch_posts({state,commit}){
+          request.get(host+'post/user/'+state.me.id).end((err,res)=>{
             commit('set_posts',res.body)
           })
       },
-      fetch_message({commit},query){
+      fetch_message({state,commit}){
           request
-              .get(host+'message/'+query.fromId+'/'+query.toId)
-              // .query(query)
+              .get(host+'message/'+state.me.id+'/'+state.you.id)
               .end((err, res) => {
                   commit('set_message', res.body)
               })

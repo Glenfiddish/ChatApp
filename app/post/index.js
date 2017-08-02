@@ -74,7 +74,6 @@ router.delete('/:postId/deletePost',(req,res)=>{
 
 //get user && friend post
 router.get('/user/:id',async (req,res)=>{
-    // let userPost = await connect.query('select p.id,p.title,p.content,p.image,p.createdAt,p.loginUserId,l.account,IFNULL(l.logo,"//localhost:3001/static/upload/noPhoto.png") as logo from posts as p LEFT JOIN login_users as l on l.id=p.loginUserId where loginUserId = ? or loginUserId in (SELECT friendId from relations where loginUserId = ?) or loginUserId in (SELECT loginUserId from relations where friendId = ?)',{model:Post,replacements:[req.params.id,req.params.id,req.params.id]})
     let userPost = await connect
         .query(
             'select p.title,p.id,p.content,p.image,p.createdAt,p.loginUserId,l.account,IFNULL(l.logo,"http://localhost:3001/static/upload/noPhoto.png") as logo,'+
@@ -84,7 +83,7 @@ router.get('/user/:id',async (req,res)=>{
             'LEFT JOIN (comments  c LEFT JOIN login_users as lc on lc.id = c.loginUserId) on c.postId = p.id '+
             'where p.loginUserId = 2 or '+
             'p.loginUserId in (SELECT friendId from relations where loginUserId = 2) '+
-            'or p.loginUserId in (SELECT loginUserId from relations where friendId = 2)',{model:Post,replacements:[req.params.id,req.params.id,req.params.id]})
+            'or p.loginUserId in (SELECT loginUserId from relations where friendId = 2) order by createdAt desc',{model:Post,replacements:[req.params.id,req.params.id,req.params.id]})
     let resJson = await arrDum(userPost)
     res.send(resJson)
 })

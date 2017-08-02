@@ -81,7 +81,7 @@ if(process.env.NODE_ENV == "development"){
                     <script src="/socket.io/socket.io.js"></script>
                 </head>
                 <body>
-                    <h3>${user.account}<a href="/auth/logout">退出</a></h3>
+                    <!-- <h3>${user.account}<a href="/auth/logout">退出</a></h3>-->
                     <div id="app" class="app"></div>
                 </body>
                 <script>

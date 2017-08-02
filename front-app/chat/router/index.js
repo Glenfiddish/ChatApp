@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import dialog from '../components/dialog.vue'
-import friend from '../components/friend.vue'
+import homePage from '../components/homePage.vue'
 import login from '../components/login.vue'
 import loginout from '../components/loginout.vue'
 import notFound from '../components/not-found.vue'
@@ -19,8 +19,8 @@ export default new Router({
     },
     {
       path: '/',
-      name: 'friend',
-      component: friend
+      name: 'homepage',
+      component: homePage
     },
     {
       path: '/login',
