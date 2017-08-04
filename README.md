@@ -1,7 +1,6 @@
 # 聊天APP
 > this is chatApp show By vue2.0
 ##npm run dev 访问localhost:3000
-
 ## 安装步骤
 
 # npm install
@@ -12,7 +11,7 @@ npm run dev
 # build for production with minification
 npm run build
 
-
+### 实现内容 在线聊天 添加好友 好友请求 发送好友文章(点赞 评论) 后台数据查看(增删查改)
 ### 使用技术简介 （vue2.x + webpack3.3 + superagent + vue-router + vuex + Element-UI）
 ### 项目简单演示
 ####后台管理系统
