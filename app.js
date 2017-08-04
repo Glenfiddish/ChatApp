@@ -157,7 +157,7 @@ io.on('connection',(socket)=>{
         }).then((item)=>{
             if(clients[obj.toId]){
                 model.connect.query(`select r.*,u.name as fromName,u.logo as fromLogo  from requests as r LEFT JOIN login_users as u on u.id = r.fromId where r.id = ?`,{model:model.Request,replacements:[item.id]}).then((request)=>{
-                    clients[obj.toId].emit('receive-request',request)
+                    clients[obj.toId].emit('receive-request',request[0].dataValues)
                 })
             }
         })
