@@ -43,7 +43,6 @@ app.use((req,res,next)=>{
 
 
 app.get('/',function (req,res) {res.render('index')})
-
 app.use('/user', require('./app/user'))
 app.use('/post', require('./app/post'))
 app.use('/message', require('./app/message'))
@@ -122,18 +121,46 @@ if(process.env.NODE_ENV == "development"){
 
 let clients = {}
 io.on('connection',(socket)=>{
-    console.log('user connected')
+    // for test socket
+    socket.use((e,next)=>{
+        console.log(e)
+        next()
+    })
+
     socket.on('login',(name)=>{
         clients[name] = socket
     })
     socket.on('send-message',(msg)=>{
-        model.redis.lpush(msg.from+'_'+msg.to,JSON.stringify(Object.assign({},msg,{type:'send',timeStamp:moment.now(),read:true})))
-        model.redis.lpush(msg.to+'_'+msg.from,JSON.stringify(Object.assign({},msg,{type:'receive',timeStamp:moment.now(),read:false})))
-        // console.log(clients)
-        // consolo.log(msg)
+        model.redis.lpush(
+            msg.from+'_'+msg.to,
+            JSON.stringify(Object.assign({},msg,
+                {type:'send',timeStamp:moment.now(),read:true})
+            )
+        )
+        model.redis.lpush(
+            msg.to+'_'+msg.from,
+            JSON.stringify(Object.assign({},msg,
+                {type:'receive',timeStamp:moment.now(),read:false})
+            )
+        )
         if(clients[msg.to]){
             clients[msg.to].emit('receive-message',msg)
         }
+    })
+
+    socket.on('send-request',(obj)=>{
+        // console.log(obj.content)
+        model.Request.create({
+            content:obj.content,
+            fromId:obj.fromId,
+            toId:obj.toId,
+        }).then((item)=>{
+            if(clients[obj.toId]){
+                model.connect.query(`select r.*,u.name as fromName,u.logo as fromLogo  from requests as r LEFT JOIN login_users as u on u.id = r.fromId where r.id = ?`,{model:model.Request,replacements:[item.id]}).then((request)=>{
+                    clients[obj.toId].emit('receive-request',request)
+                })
+            }
+        })
     })
 })
 

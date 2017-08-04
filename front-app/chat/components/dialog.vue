@@ -76,7 +76,7 @@
             this.scrollToBottom()
             this.text=''
         },
-        ...mapMutations(['send_message']),
+        ...mapMutations(['send_message','add_unread']),
         ...mapActions(['fetch_message'])
     },
     watch:{
@@ -91,6 +91,7 @@
         var that = this
         socket.on('receive-message',(obj)=>{
             that.send_message({to:that.me.id,text:obj.text,from:this.you.id,type:'receive'})
+            that.add_unread(obj)
         })
         this.fetch_message({fromId:that.me.id,toId:that.you.id})
         this.scrollToBottom()

@@ -17,14 +17,16 @@
 
         <!--friend list-->
         <div v-for="f in friends" class="friend-item" @click="startChat(f)">
-          <img :src="f.logo" alt="#" width="100px" height="100px"  class="friend-item-logo">
+          <el-badge :value="f.unread" class="item">
+              <avatar username="f.account" :src="f.logo" :size="50"></avatar>
+          </el-badge>
           <span class="friend-item-name">{{ f.account }}</span>
         </div>
 
       </el-col>
       <el-col :span="17">
-          <!--route-->
-          <router-view class="pages"></router-view>
+        <!--route-->
+        <router-view class="pages"></router-view>
       </el-col>
     </el-row>
   </div>
@@ -32,6 +34,7 @@
 
 <script>
     import {mapGetters,mapActions,mapMutations} from 'vuex'
+    import Avatar from 'vue-avatar'
     export default {
         name: 'app',
         computed: {
@@ -39,17 +42,19 @@
                 'friends',
                 'posts',
                 'self',
-                'me'
+                'me',
+                'you'
             ])
         },
         methods: {
             ...mapActions([
                 'fetch_friends'
             ]),
-            ...mapMutations(['set_you']),
+            ...mapMutations(['set_you','clear_unread']),
             startChat(f){
                 this.set_you(f)
                 this.$router.push('./dialog')
+                this.clear_unread({from:this.you.id})
             },
             clickMsg(){
                 console.log('1')
@@ -60,6 +65,9 @@
         },
         mounted(){
             this.fetch_friends()
+        },
+        components:{
+            avatar:Avatar.Avatar
         }
     }
 </script>
@@ -72,10 +80,11 @@
   body{
     font-family: Helvetica Neue,Helvetica,Hiragino Sans GB,Microsoft YaHei;
   }
+
   #app {
     margin:0 auto;
-    max-width: 1000px;
-    min-width: 800px;
+    /*max-width: 90%px;*/
+    width: 75%;
     height: 100%;
     -webkit-border-radius: 3px;
     overflow: hidden;
@@ -88,7 +97,6 @@
     background-color: #2e3238;
   }
   .userInfo{
-
     padding: 18px;
   }
   .userInfo img{
@@ -100,7 +108,7 @@
   .userInfo .username{
     display: inline-block;
     font-weight: 400;
-    width: 156px;
+    width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -149,19 +157,45 @@
     border-bottom: 1px solid #292c33;
     cursor: pointer;
     position: relative;
-
   }
 
-  .friend-item-logo{
-    vertical-align:middle;
-    width: 40px;
-    height: 40px;
-  }
   .friend-item-name{
     font-size: 18px;
     margin-left: 20px;
   }
   .friend-item:hover{
     background-color: #e2e2e2;
+  }
+
+  @media screen and ( max-width: 650px ) {
+    #app {
+      width: 100%;
+      height: 100%;
+    }
+    .friend-item-name{
+      display: none;
+    }
+    .friend-item{
+      padding: 6px 6px 5px;
+      margin: 0 auto;
+    }
+    .tag .tag-item{
+      width: 100%;
+    }
+    .tag .tag-item i{
+      font-size: 30px;
+    }
+    .userInfo img{
+      -webkit-border-radius: 2px;
+      width: 100%;
+      /*height: 45px;*/
+      margin-right: 10px;
+    }
+    .userInfo .username{
+      width: 100%;
+      font-size: 20px;
+      text-align: center;
+      line-height: 20px;
+    }
   }
 </style>
