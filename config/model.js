@@ -46,9 +46,10 @@ const Reply = vueAdmin.define('reply',{
 Reply.belongsTo(Comment)
 
 const Request = vueAdmin.define('request',{
-  connect:Sequelize.STRING,
-  response:Sequelize.STRING,
-  isRead:Sequelize.BOOLEAN
+    concent:Sequelize.STRING,
+    response:Sequelize.STRING,
+    isRead:Sequelize.BOOLEAN,
+    accept:Sequelize.BOOLEAN
 })
 Request.belongsTo(User,{as:'from'})
 Request.belongsTo(User,{as:'to'})

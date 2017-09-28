@@ -10,7 +10,9 @@ const connect = model.connect
 let express = require('express')
 let router = express.Router()
 
-//all user
+/**
+ * all user
+ */
 router.get('/',(req,res)=>{
     if(req.query.offset && req.query.limit){
         User.findAll({
@@ -29,7 +31,9 @@ router.get('/',(req,res)=>{
     }
 })
 
-//update user
+/**
+ * update user
+ */
 router.patch('/:id',(req,res)=>{
     User.findById(req.params.id).then(userItem=>{
         userItem.update(req.body)
@@ -44,7 +48,9 @@ router.patch('/:id',(req,res)=>{
 //     res.send(obj)
 })
 
-//id friend otherUser post
+/**
+ * id friend otherUser post
+ */
 router.get('/:id/detail',(req,res)=>{
     User.findById(req.params.id)
       .then(item=>{
@@ -64,13 +70,17 @@ router.get('/:id/detail',(req,res)=>{
         })
   })
 
-//search friend
+/**
+ * search friend
+ */
 router.get('/:id/friend',async (req,res)=>{
     let item = await connect.query('SELECT ifnull(logo,"//localhost:3001/static/upload/noPhoto.png") as logo,id,account from login_users where id in (SELECT friendId from relations where loginUserId = ?) or id in (SELECT loginUserId from relations where friendId = ?)',{model:model.User,replacements:[req.params.id,req.params.id]})
     res.send(item)
 })
 
-//add friend
+/**
+ * add friend
+ */
 router.post('/:loginUserId/addFriend',(req,res)=>{
   model
     .Relation.create({
@@ -83,5 +93,22 @@ router.post('/:loginUserId/addFriend',(req,res)=>{
           })
     })
 })
+
+/**
+ * request page for search users
+ */
+router.post('/search',async (req,res)=>{
+    let searchUsers = await connect.query(`select * from login_users as u where u.account like '%${req.query.query}%' and u.id!=?`,{model:model.User,replacements:[req.query.from]})
+    res.send(searchUsers)
+})
+
+/**
+ * get request of user
+ */
+router.get('/requests/:id',async (req,res)=>{
+    let searchRequest = await connect.query(`select r.*,u.name as fromName,u.logo as fromLogo  from requests as r LEFT JOIN login_users as u on u.id = r.fromId where r.toId = ?`,{model:model.Request,replacements:[req.params.id]})
+    res.send(searchRequest)
+})
+
 
 module.exports = router

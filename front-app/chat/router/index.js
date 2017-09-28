@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import dialog from '../components/dialog.vue'
-import friend from '../components/friend.vue'
-import login from '../components/login.vue'
+import homePage from '../components/homePage.vue'
+import request from '../components/request.vue'
 import loginout from '../components/loginout.vue'
 import notFound from '../components/not-found.vue'
 import post from '../components/post.vue'
@@ -19,13 +19,13 @@ export default new Router({
     },
     {
       path: '/',
-      name: 'friend',
-      component: friend
+      name: 'homepage',
+      component: homePage
     },
     {
-      path: '/login',
-      name: 'login',
-      component: login
+      path: '/request',
+      name: 'request',
+      component: request
     },
     {
       path: '/loginout',

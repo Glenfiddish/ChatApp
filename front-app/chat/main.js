@@ -21,3 +21,9 @@ new Vue({
   components: { App }
 })
 
+import socket from './socket'
+
+socket.on('connect',()=>{
+    socket.emit('login',window.user.id)
+})
+
